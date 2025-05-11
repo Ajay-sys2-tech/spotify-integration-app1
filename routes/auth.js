@@ -22,7 +22,7 @@ function generateRandomString(length) {
 router.get('/login', function(req, res) {
 
   var state = generateRandomString(16);
-  var scope = 'user-read-private user-read-email';
+  var scope = 'user-read-private user-read-email user-follow-read';
 
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
@@ -86,8 +86,6 @@ router.get('/callback', async function(req, res) {
     }
 
     const data = await response.json();
-
-    console.log(data); // Log the token response for debugging
 
     res.status(200).json(data); // Send the token response as JSON
 
