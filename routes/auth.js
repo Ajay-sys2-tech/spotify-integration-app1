@@ -60,7 +60,8 @@ router.get('/callback', async function(req, res) {
       };
 
       const token = await fetch(authOptions);
-      console.log(token);
+      console.log(token.json());
+      res.status(200).json(token.json());
     }
   });
 
