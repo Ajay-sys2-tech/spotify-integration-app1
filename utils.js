@@ -13,7 +13,7 @@ const token = process.env.SPOTIFY_TOKEN;
 async function fetchWebApi(endpoint, method, body) {
   const res = await fetch(`https://api.spotify.com/v1/${endpoint}`, {
     headers: {
-    //   Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method,
     body:JSON.stringify(body)
