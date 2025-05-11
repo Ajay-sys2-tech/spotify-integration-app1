@@ -45,23 +45,56 @@ router.get('/callback', async function(req, res) {
           error: 'state_mismatch'
         }));
     } else {
-      var authOptions = {
-        url: 'https://accounts.spotify.com/api/token',
-        form: {
-          code: code,
-          redirect_uri: redirect_uri,
-          grant_type: 'authorization_code'
-        },
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
-        },
-        json: true
-      };
+    //   var authOptions = {
+    //     url: 'https://accounts.spotify.com/api/token',
+    //     form: {
+    //       code: code,
+    //       redirect_uri: redirect_uri,
+    //       grant_type: 'authorization_code'
+    //     },
+    //     headers: {
+    //       'content-type': 'application/x-www-form-urlencoded',
+    //       'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
+    //     },
+    //     json: true
+    //   };
 
-      const token = await fetch(authOptions);
-      console.log(token.json());
-      res.status(200).json(token.json());
+    //   const token = await fetch(authOptions);
+    //   console.log(token.json());
+    //   res.status(200).json(token.json());
+
+    const authHeader = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
+
+  const body = new URLSearchParams({
+    code: code,
+    redirect_uri: redirect_uri,
+    grant_type: 'authorization_code'
+  });
+
+  try {
+    const response = await fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${authHeader}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: body
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch token: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    console.log(data); // Log the token response for debugging
+
+    res.status(200).json(data); // Send the token response as JSON
+
+  } catch (error) {
+    console.error('Token fetch error:', error);
+    res.status(500).json({ error: 'Token exchange failed' });
+  }
     }
   });
 
