@@ -34,7 +34,7 @@ router.get('/login', function(req, res) {
     }));
 });
 
-router.get('/callback', function(req, res) {
+router.get('/callback', async function(req, res) {
 
     var code = req.query.code || null;
     var state = req.query.state || null;
@@ -58,6 +58,9 @@ router.get('/callback', function(req, res) {
         },
         json: true
       };
+
+      const token = await fetch(authOptions);
+      console.log(token);
     }
   });
 
